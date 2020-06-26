@@ -86,23 +86,32 @@ class MyLinkedList {
     func addAtIndex(_ index: Int, _ val: Int) { // FIXME: adjust head and tail if necessary
         // O(n)
         var current = self.head
-        var inserted: Node? = nil
         var penult: Node? = nil
+        
+        if index == 0 {
+            // Add node to start of linked list, can just call addAtHead
+            addAtHead(val)
+            return
+        }
         
         for num in 0...index {
             guard current != nil else { // Invalid, longer than list iself
                 return
             }
             
+            // Some code
             if num == index - 1 {
-                penult = current // prior to inserted node
-                inserted = current!.next // inserted node
-               
-                if penult!.next != nil {
-                    inserted!.next = penult!.next
+                penult = current
+            } else if num == index {
+                let inserted = Node(value: val)
+                
+                inserted.next = penult!.next
+                penult!.next = inserted
+                
+                if index == self.size {
+                    self.tail = inserted
                 }
                 
-                penult!.next = inserted // Want to do this regardless of whether nth node exists
                 self.size += 1
             }
             
@@ -119,13 +128,27 @@ class MyLinkedList {
         // O(n)
         var current = self.head
         var penult: Node? = nil // Store reference to penultimate node
+        var tailDeletion = false // Reassign tail if node deletion occurs at end of list
+        
+        
+        if index == 0 && index == size - 1 {
+            self.head = self.head!.next
+            self.tail = self.head
+            return
+        }
+        if index == 0 {
+            self.head = self.head!.next
+        }
+        if index == size - 1 { tailDeletion = true }
+        
         
         for num in 0...index {
             guard current != nil else { return }
             
             if num == index - 1 {
                 penult = current
-                print(penult!.next!.val!)
+                
+                if tailDeletion { self.tail = penult }
             } else if num == index {
                 penult!.next = current!.next
                 self.size -= 1
@@ -157,12 +180,21 @@ class MyLinkedList {
  */
 
 let obj = MyLinkedList()
+
+obj.addAtHead(7)
 obj.addAtHead(2)
-obj.addAtHead(1)
-obj.addAtTail(3)
-//obj.addAtIndex(1, 2)
-//print(obj.get(1)) // fine up to here
-obj.deleteAtIndex(2)
-//print(obj.get(1))
+obj.addAtHead(1) // 1, 2, 7
+obj.addAtIndex(3, 0) // 1, 2, 7, 0
+obj.deleteAtIndex(2) // 1, 2, 0
+obj.addAtHead(6)
+obj.addAtTail(4) // 6, 1, 2, 0, 4 missing 4
+obj.display()
+print(obj.get(4))
+obj.addAtHead(4)
+obj.addAtIndex(5, 0)
+obj.addAtHead(6)
 //
 obj.display()
+
+
+
