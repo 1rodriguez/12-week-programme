@@ -2,7 +2,7 @@ import Foundation
 
 class Node {
     let val: Int?
-    let next: Node? // Singly Linked
+    var next: Node? // Singly Linked
     
     init() {
         self.val = nil
@@ -70,28 +70,99 @@ class MyLinkedList {
     /** Append a node of value val to the last element of the linked list. */
     func addAtTail(_ val: Int) {
         // O(1)
+        guard self.tail != nil else {
+            self.tail = Node(value: val)
+            self.head = self.tail
+            
+            self.size += 1
+            return
+        }
         
+        let newTail = Node(value: val)
+        self.tail!.next = newTail
     }
     
     /** Add a node of value val before the index-th node in the linked list. If index equals to the length of linked list, the node will be appended to the end of linked list. If index is greater than the length, the node will not be inserted. */
-    func addAtIndex(_ index: Int, _ val: Int) {
+    func addAtIndex(_ index: Int, _ val: Int) { // FIXME: adjust head and tail if necessary
         // O(n)
+        var current = self.head
+        var inserted: Node? = nil
+        var penult: Node? = nil
+        
+        for num in 0...index {
+            guard current != nil else { // Invalid, longer than list iself
+                return
+            }
+            
+            if num == index - 1 {
+                penult = current // prior to inserted node
+                inserted = current!.next // inserted node
+               
+                if penult!.next != nil {
+                    inserted!.next = penult!.next
+                }
+                
+                penult!.next = inserted // Want to do this regardless of whether nth node exists
+                self.size += 1
+            }
+            
+            if current!.next != nil {
+                current = current!.next
+            }
+            
+        }
         
     }
     
     /** Delete the index-th node in the linked list, if the index is valid. */
     func deleteAtIndex(_ index: Int) {
         // O(n)
+        var current = self.head
+        var penult: Node? = nil // Store reference to penultimate node
+        
+        for num in 0...index {
+            guard current != nil else { return }
+            
+            if num == index - 1 {
+                penult = current
+                print(penult!.next!.val!)
+            } else if num == index {
+                penult!.next = current!.next
+                self.size -= 1
+            }
+            
+            if current!.next != nil {
+                current = current!.next
+            }
+        }
+    }
+    
+    func display() {
+        var current: Node? = self.head
+        var console: [Int] = []
+        
+        while current != nil {
+            console.append(current!.val!) // Value guaranteed as long as node is non-nil (in this problem)
+            
+            current = current!.next
+        }
+        
+        print(console)
     }
 }
 
 /**
  * Your MyLinkedList object will be instantiated and called as such:
- * let obj = MyLinkedList()
- * let ret_1: Int = obj.get(index)
- * obj.addAtHead(val)
- * obj.addAtTail(val)
- * obj.addAtIndex(index, val)
- * obj.deleteAtIndex(index)
+
  */
 
+let obj = MyLinkedList()
+obj.addAtHead(2)
+obj.addAtHead(1)
+obj.addAtTail(3)
+//obj.addAtIndex(1, 2)
+//print(obj.get(1)) // fine up to here
+obj.deleteAtIndex(2)
+//print(obj.get(1))
+//
+obj.display()
