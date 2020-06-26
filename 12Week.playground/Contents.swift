@@ -55,12 +55,16 @@ class MyLinkedList {
         // O(1)
         guard self.head != nil else {
             self.head = Node(value: val)
+            self.tail = self.head // No head implies one-node list
+            
+            self.size += 1
             return
         }
         
         let newHead = Node(value: val, next: self.head!)
         self.head = newHead
         
+        self.size += 1
     }
     
     /** Append a node of value val to the last element of the linked list. */
