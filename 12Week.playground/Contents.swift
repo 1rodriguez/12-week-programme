@@ -1,7 +1,8 @@
 import Foundation
+
 class Node {
     let val: Int?
-    let next: Node?
+    let next: Node? // Singly Linked
     
     init() {
         self.val = nil
@@ -52,6 +53,13 @@ class MyLinkedList {
     /** Add a node of value val before the first element of the linked list. After the insertion, the new node will be the first node of the linked list. */
     func addAtHead(_ val: Int) {
         // O(1)
+        guard self.head != nil else {
+            self.head = Node(value: val)
+            return
+        }
+        
+        let newHead = Node(value: val, next: self.head!)
+        self.head = newHead
         
     }
     
